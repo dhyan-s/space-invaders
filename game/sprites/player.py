@@ -44,11 +44,11 @@ class Player:
         x_change = 0
         if keys[pygame.K_LEFT]:
             x_change = -self.movement_vel
-        elif keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT]:
             x_change = self.movement_vel
             
         # Handle nitro
-        if keys[pygame.K_RCTRL] and (self.nitro_bar.value > 0 and x_change != 0):
+        if keys[pygame.K_RCTRL] and self.nitro_bar.value > 0 and x_change != 0:
             self.nitro_boost -= 1
             x_change *= 2
             
