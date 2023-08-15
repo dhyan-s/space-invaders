@@ -74,10 +74,13 @@ class Player:
         
         if self.health_bar.value < 20:
             self.health_bar.fill_color = "red"
+            self.health_bar.outline_color = "red"
         elif self.health_bar.value < 50:
             self.health_bar.fill_color = "orange"
+            self.health_bar.outline_color = "orange"
         else:
             self.health_bar.fill_color = "green"
+            self.health_bar.outline_color = "green"
         self.health_bar.value -= 0.1
         
     def update_nitro_bar(self) -> None:
