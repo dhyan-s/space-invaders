@@ -16,7 +16,9 @@ class Game:
         self.player.img_rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
         
     def handle_event(self, event: pygame.event.Event) -> None:
-        pass
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.player.fire_bullet()
         
     def update(self) -> None:
         self.display.blit(self.background, (0, 0))
