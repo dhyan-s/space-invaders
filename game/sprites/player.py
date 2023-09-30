@@ -5,7 +5,7 @@ from typing import List
 from .bar import Bar
 
 class Player:
-    def __init__(self, display: pygame.Surface):
+    def __init__(self, display: pygame.Surface) -> None:
         self.display = display
         
         self.__load()
@@ -31,11 +31,8 @@ class Player:
         self.nitro_bar = Bar(self.display, width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)
         
         self.bullet_img = pygame.image.load("assets/images/bullet.png").convert_alpha()
-        original_dimensions = self.bullet_img.get_size()
-        new_height = 50
-        new_width = new_height * (original_dimensions[0] / original_dimensions[1])
-        self.bullet_img = pygame.transform.scale(self.bullet_img , (new_width, new_height))
-        self.bullet_rects: List[pygame.Rect] = []
+        self.bullet_img = pygame.transform.scale(self.bullet_img , (50, 50))
+        self.bullet_rects = []
         
     def handle_player_movement(self) -> None:
         keys = pygame.key.get_pressed()
