@@ -59,8 +59,6 @@ class Player:
         self.handle_bullet_movement()
         self.render_bullets()
         self.display.blit(self.image, self.img_rect)
-        self.health_bar.update()
-        self.nitro_bar.update()
         self.update_health_bar()
         self.update_nitro_bar()
         
@@ -79,6 +77,7 @@ class Player:
             self.health_bar.fill_color = "green"
             self.health_bar.outline_color = "green"
         self.health_bar.value -= 0.1
+        self.health_bar.update()
         
     def update_nitro_bar(self) -> None:
         self.nitro_bar.value = math.ceil(self.nitro_boost / self.nitro_boost_unit)
@@ -86,6 +85,7 @@ class Player:
         self.nitro_bar.rect.right = self.img_rect.right
         self.nitro_bar.rect.width = self.img_rect.width - self.health_bar.rect.width - self.health_nitro_bar_spacing
         self.nitro_bar.rect.top = self.health_bar.rect.top
+        self.nitro_bar.update()
         
     def fire_bullet(self) -> None:
         current_time = pygame.time.get_ticks()
