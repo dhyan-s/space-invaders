@@ -31,7 +31,7 @@ class Player:
         self.nitro_bar = Bar(self.display, width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)
         
         self.bullet_img = pygame.image.load("assets/images/bullet.png").convert_alpha()
-        self.bullet_img = pygame.transform.scale(self.bullet_img , (50, 50))
+        self.bullet_img = pygame.transform.scale(self.bullet_img , (40, 40))
         self.bullet_rects = []
         
     def handle_player_movement(self) -> None:
