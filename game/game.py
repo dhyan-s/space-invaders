@@ -15,7 +15,7 @@ class Game:
         self.background.set_alpha(200)
         
         self.player = Player(self.display)
-        self.player.img_rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
+        self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
         
         self.event = pygame.USEREVENT
         pygame.time.set_timer(self.event, 800)
