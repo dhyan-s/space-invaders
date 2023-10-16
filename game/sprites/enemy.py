@@ -6,6 +6,7 @@ from .bullet import Bullet, BulletGroup
 class Enemy:
     def __init__(self, display: pygame.Surface) -> None:
         self.display = display
+        self.bullet_vel = 2
         
         self.__load()
         
@@ -13,11 +14,6 @@ class Enemy:
         self.image = pygame.image.load("assets/images/enemy.png").convert_alpha()
         self.image = pygame.transform.scale(self.image , (100 , 75))
         self.rect = self.image.get_rect()
-        
-        slot1_x = self.rect.x + self.rect.width * 0.22
-        slot2_x = self.rect.x + self.rect.width * 0.5
-        slot3_x = self.rect.x + self.rect.width * 0.78
-        self.bullet_slot_coords = [slot1_x, slot2_x, slot3_x]
         
         self.bullet_img = pygame.image.load("assets/images/enemy_bullet.png").convert_alpha()
         self.bullet_img = pygame.transform.rotate(self.bullet_img, 180)
@@ -28,12 +24,20 @@ class Enemy:
         self.bullet_group.update_all()
         self.display.blit(self.image, self.rect)
         
+    def _determine_slot_coordinates(self, slot: int) -> float:
+        slot1_x = self.rect.x + self.rect.width * 0.22
+        slot2_x = self.rect.x + self.rect.width * 0.5
+        slot3_x = self.rect.x + self.rect.width * 0.78
+        slot_coordinates = [slot1_x, slot2_x, slot3_x]
+        return slot_coordinates[slot]
+
     def __fire_bullet(self, slot: int = 1) -> None:
         if slot not in [0, 1, 2]:
             raise ValueError(f"Slot must range between 0 and 2, recieved {slot}.")
-        bullet = Bullet(self.display, self.bullet_img, 2)
+        bullet = Bullet(self.display, self.bullet_img, self.bullet_vel)
         bullet_top = self.rect.centery + 10
-        bullet.rect.midtop = (self.bullet_slot_coords[slot], bullet_top)
+        bullet.rect.midtop = (self._determine_slot_coordinates(slot), bullet_top)
+        bullet.fire()
         self.bullet_group.add(bullet)
         
     def fire_bullets(self, slots: Union[List[int], int] = 1) -> None:
