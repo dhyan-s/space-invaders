@@ -31,10 +31,10 @@ class Bullet:
     
 
 class BulletGroup:
-    def __init__(self, display: pygame.Surface):
+    def __init__(self, display: pygame.Surface, remove_callback: Callable[[Bullet], bool] = None):
         self.display = display
         self.bullet_list: List[Bullet] = []
-        self.remove_callback: Callable[[Bullet], bool] = lambda b: None
+        self.remove_callback = (lambda b: None) if remove_callback is None else remove_callback
         
     def add(self, bullet: Bullet) -> None:
         self.bullet_list.append(bullet)
