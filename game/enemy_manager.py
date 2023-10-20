@@ -29,6 +29,8 @@ class EnemyManager:
         enemy.bullet_vel = self.enemy_bullet_vel
         enemy.rect.centerx = spawn_point
         enemy.rect.bottom = 0
+        enemy.autofire.autofire = True
+        enemy.autofire.delay_range = (3000, 8000)
         self.enemies_list.append(enemy)
         
     def handle_spawning(self) -> None:

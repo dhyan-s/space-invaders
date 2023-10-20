@@ -1,5 +1,7 @@
 import pygame
 from typing import List, Tuple, Union
+import random
+from dataclasses import dataclass, field
 
 from .bullet import Bullet, BulletGroup
 
@@ -18,10 +20,28 @@ class EnemySpaceship:
         
     def get_slot_coords(self, slot_idx: int):
         slot_factors = self.slot_factors[slot_idx]
-        return (self.rect.width * slot_factors[0], self.rect.height * slot_factors[1])
+        return (self.rect.left + self.rect.width * slot_factors[0], self.rect.top + self.rect.height * slot_factors[1])
     
     def update(self, surface: pygame.Surface) -> None:
         surface.blit(self.img, self.rect)
+
+
+@dataclass
+class AutoFire:
+    autofire: bool
+    delay_range: Tuple[int, int]
+    no_of_slots: int
+    max_fireable_slots: int
+    disabled_slots: List[int] = field(default_factory=list)
+    
+    def __post_init__(self) -> None:
+        self.last_fire_time = 0
+        self.delay = 0
+        
+    def get_rand_firing_slots(self) -> List[int]:
+        slots = [slot for slot in range(self.no_of_slots) if slot not in self.disabled_slots]
+        slots_to_fire = random.randint(0, min(self.max_fireable_slots, len(slots)))
+        return random.sample(slots, slots_to_fire)
 
 
 class Enemy:
@@ -41,6 +61,13 @@ class Enemy:
             (0.78, 0.5)
         ]
         
+        self.autofire = AutoFire(
+            autofire=False,
+            delay_range=(800, 5000),
+            no_of_slots=self.spaceship.no_of_slots,
+            max_fireable_slots=self.spaceship.no_of_slots
+        )
+        
         self.bullet_img = pygame.image.load("assets/images/enemy_bullet.png").convert_alpha()
         self.bullet_img = pygame.transform.rotate(self.bullet_img, 180)
         self.bullet_img = pygame.transform.scale(self.bullet_img , (40, 40))
@@ -56,6 +83,7 @@ class Enemy:
         
     def update(self) -> None:
         self.bullet_group.update_all()
+        self.handle_auto_fire()
         self.spaceship.update(self.display)
 
     def __fire_bullet(self, slot: int = 0) -> None:
@@ -71,4 +99,11 @@ class Enemy:
         slots = [slots] if isinstance(slots, int) else slots
         for slot in list(set(slots)): 
             self.__fire_bullet(slot)
+            
+    def handle_auto_fire(self) -> None:
+        if not self.autofire.autofire or pygame.time.get_ticks() - self.autofire.last_fire_time < self.autofire.delay:
+            return
+        self.fire_bullets(self.autofire.get_rand_firing_slots())
+        self.autofire.last_fire_time = pygame.time.get_ticks()
+        self.autofire.delay = random.randint(*self.autofire.delay_range)
             
