@@ -35,13 +35,19 @@ class AutoFire:
     disabled_slots: List[int] = field(default_factory=list)
     
     def __post_init__(self) -> None:
-        self.last_fire_time = 0
-        self.delay = 0
+        self.update_firing_attributes()
         
     def get_rand_firing_slots(self) -> List[int]:
         slots = [slot for slot in range(self.no_of_slots) if slot not in self.disabled_slots]
         slots_to_fire = random.randint(0, min(self.max_fireable_slots, len(slots)))
         return random.sample(slots, slots_to_fire)
+    
+    def ready_to_fire(self) -> bool:
+        return self.autofire and pygame.time.get_ticks() - self.last_fire_time >= self.delay
+    
+    def update_firing_attributes(self) -> None:
+        self.last_fire_time = pygame.time.get_ticks()
+        self.delay = random.randint(*self.delay_range)
 
 
 class Enemy:
@@ -63,7 +69,7 @@ class Enemy:
         
         self.autofire = AutoFire(
             autofire=False,
-            delay_range=(800, 5000),
+            delay_range=(2000, 5000),
             no_of_slots=self.spaceship.no_of_slots,
             max_fireable_slots=self.spaceship.no_of_slots
         )
@@ -101,9 +107,7 @@ class Enemy:
             self.__fire_bullet(slot)
             
     def handle_auto_fire(self) -> None:
-        if not self.autofire.autofire or pygame.time.get_ticks() - self.autofire.last_fire_time < self.autofire.delay:
-            return
-        self.fire_bullets(self.autofire.get_rand_firing_slots())
-        self.autofire.last_fire_time = pygame.time.get_ticks()
-        self.autofire.delay = random.randint(*self.autofire.delay_range)
+        if self.autofire.ready_to_fire():
+            self.fire_bullets(self.autofire.get_rand_firing_slots())
+            self.autofire.update_firing_attributes()
             

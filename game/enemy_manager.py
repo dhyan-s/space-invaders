@@ -9,7 +9,7 @@ class EnemyManager:
         self.display = display
         
         self.downward_vel = 2.5
-        self.no_sections = 6
+        self.no_sections = 5
         self.enemy_bullet_vel = 2
         self.enemy_vel = 1
         self.enemy_spawn_range = (1,3)
