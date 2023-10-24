@@ -26,16 +26,22 @@ class EnemySpaceship:
         surface.blit(self.img, self.rect)
 
 
-@dataclass
 class AutoFire:
-    autofire: bool
-    delay_range: Tuple[int, int]
-    no_of_slots: int
-    max_fireable_slots: int
-    disabled_slots: List[int] = field(default_factory=list)
-    
-    def __post_init__(self) -> None:
-        self.update_firing_attributes()
+    def __init__(self, 
+                 autofire: bool,
+                 delay_range: Tuple[int, int],
+                 no_of_slots: int,
+                 max_fireable_slots: int,
+                 disabled_slots: List[int] = None,
+                 initial_delay_range: Tuple[int, int] = None) -> None:
+        self.autofire = autofire
+        self.delay_range = delay_range
+        self.no_of_slots = no_of_slots
+        self.max_fireable_slots = max_fireable_slots
+        self.disabled_slots = disabled_slots if disabled_slots is not None else []
+        
+        self.last_fire_time = pygame.time.get_ticks()
+        self.delay = random.randint(*(initial_delay_range if initial_delay_range is not None else delay_range))
         
     def get_rand_firing_slots(self) -> List[int]:
         slots = [slot for slot in range(self.no_of_slots) if slot not in self.disabled_slots]
@@ -71,7 +77,8 @@ class Enemy:
             autofire=False,
             delay_range=(2000, 5000),
             no_of_slots=self.spaceship.no_of_slots,
-            max_fireable_slots=self.spaceship.no_of_slots
+            max_fireable_slots=self.spaceship.no_of_slots,
+            initial_delay_range=(500, 2000),
         )
         
         self.bullet_img = pygame.image.load("assets/images/enemy_bullet.png").convert_alpha()
