@@ -1,7 +1,6 @@
 import pygame
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Callable
 import random
-from dataclasses import dataclass, field
 
 from .bullet import Bullet, BulletGroup
 
@@ -54,6 +53,7 @@ class AutoFire:
     def update_firing_attributes(self) -> None:
         self.last_fire_time = pygame.time.get_ticks()
         self.delay = random.randint(*self.delay_range)
+        
 
 
 class Enemy:
@@ -61,6 +61,7 @@ class Enemy:
         self.display = display
         self.bullet_vel = 2
         
+        self.__is_alive: bool = True
         self.__load()
         
     def __load(self) -> None:
@@ -94,10 +95,24 @@ class Enemy:
     def rect(self, new_rect: pygame.Rect) -> None: 
         self.spaceship.rect = new_rect
         
+    def kill(self) -> None:
+        self.__is_alive = False
+        
+    def revive(self) -> None:
+        self.__is_alive = True
+        
+    @property
+    def is_alive(self) -> bool:
+        return self.__is_alive
+        
+    def is_useless(self) -> None:
+        return (not self.is_alive) and self.bullet_group.is_empty()
+        
     def update(self) -> None:
         self.bullet_group.update_all()
-        self.handle_auto_fire()
-        self.spaceship.update(self.display)
+        if self.is_alive:
+            self.handle_auto_fire()
+            self.spaceship.update(self.display)
 
     def __fire_bullet(self, slot: int = 0) -> None:
         if slot > self.spaceship.no_of_slots - 1:
@@ -109,6 +124,7 @@ class Enemy:
         self.bullet_group.add(bullet)
         
     def fire_bullets(self, slots: Union[List[int], int] = 1) -> None:
+        if not self.is_alive: return
         slots = [slots] if isinstance(slots, int) else slots
         for slot in list(set(slots)): 
             self.__fire_bullet(slot)

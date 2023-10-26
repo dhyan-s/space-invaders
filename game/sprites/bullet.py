@@ -51,6 +51,9 @@ class BulletGroup:
         for bullet in self.bullet_list:
             bullet.fire()
             
+    def is_empty(self) -> bool:
+        return not self.bullet_list
+            
     def update_all(self) -> None:
         for bullet in self.bullet_list:
             bullet.update()

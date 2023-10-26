@@ -20,6 +20,7 @@ class EnemyManager:
         self.__delay: int = 0
         
         self.enemies_list: List[Enemy] = []
+        self._deleted_enemies: List[Enemy] = []
         
     def spawn_enemy(self) -> None:
         section_width = self.display.get_width() / self.no_sections
@@ -49,12 +50,20 @@ class EnemyManager:
     def move_enemies(self) -> None:
         for enemy in self.enemies_list:
             enemy.rect.y += self.enemy_vel
+            
+    def delete_enemy(self, enemy: Enemy) -> None:
+        assert enemy in self.enemies_list
+        enemy.kill()
+        
+    def remove_useless_enemies(self) -> None:
+        for enemy in reversed(self.enemies_list):
+            if enemy.rect.top > self.display.get_height() or enemy.is_useless():
+                self.enemies_list.remove(enemy)
         
     def update_enemies(self) -> None:
         self.handle_spawning()
         self.move_enemies()
         for enemy in self.enemies_list:
             enemy.update()
-    
-        
-        
+        self.remove_useless_enemies()
+        print(len(self.enemies_list))
