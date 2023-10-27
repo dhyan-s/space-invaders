@@ -27,6 +27,7 @@ class Player:
         self.image = pygame.image.load("assets/images/player.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (90, 98))
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         
         self.health_bar = Bar(self.display, width=50, height=10, from_=0, to=100, outline_width=1, outline_color="green", value=100)
         self.nitro_bar = Bar(self.display, width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)

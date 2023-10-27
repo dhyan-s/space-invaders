@@ -73,6 +73,7 @@ class Enemy:
             (0.5, 0.5),
             (0.78, 0.5)
         ]
+        self.mask = pygame.mask.from_surface(spaceship_image)
         
         self.autofire = AutoFire(
             autofire=False,

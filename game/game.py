@@ -26,8 +26,17 @@ class Game:
             if event.key == pygame.K_SPACE:
                 self.player.fire_bullet()
         
+    def check_bullets(self) -> None:
+        for bullet in reversed(self.player.bullet_group.bullet_list): # TODO: Create __iter__ methods
+            for enemy in self.enemy_manager.enemies_list:
+                offset = (enemy.rect.x - bullet.rect.x, enemy.rect.y - bullet.rect.y)
+                if bullet.mask.overlap(enemy.mask, offset) and enemy.is_alive:
+                    enemy.kill()
+                    try: self.player.bullet_group.remove(bullet)
+                    except ValueError: pass
         
     def update(self) -> None:
         self.display.blit(self.background, (0, 0))
+        self.check_bullets()
         self.enemy_manager.update_enemies()
         self.player.update()

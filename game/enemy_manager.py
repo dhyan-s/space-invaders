@@ -66,4 +66,3 @@ class EnemyManager:
         for enemy in self.enemies_list:
             enemy.update()
         self.remove_useless_enemies()
-        print(len(self.enemies_list))

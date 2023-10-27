@@ -12,6 +12,7 @@ class Bullet:
         
         self.rect = self.image.get_rect()
         self.rect.topleft = (0, 0) if coords is None else coords
+        self.mask = pygame.mask.from_surface(self.image)
 
     def load(self): self.__loaded = True
     def unload(self): self.__loaded = False
@@ -38,6 +39,9 @@ class BulletGroup:
         
     def add(self, bullet: Bullet) -> None:
         self.bullet_list.append(bullet)
+        
+    def remove(self, bullet: Bullet) -> None:
+        self.bullet_list.remove(bullet)
         
     def load_all(self) -> None:
         for bullet in self.bullet_list:
