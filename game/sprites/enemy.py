@@ -1,8 +1,10 @@
+from numpy import disp
 import pygame
 from typing import List, Tuple, Union, Callable
 import random
 
 from .bullet import Bullet, BulletGroup
+from .bar import Bar
 
 
 class EnemySpaceship:
@@ -60,8 +62,9 @@ class Enemy:
     def __init__(self, display: pygame.Surface) -> None:
         self.display = display
         self.bullet_vel = 2
+        self.show_health_bar: bool = False
+        self.__durability = 100
         
-        self.__is_alive: bool = True
         self.__load()
         
     def __load(self) -> None:
@@ -83,6 +86,15 @@ class Enemy:
             initial_delay_range=(500, 2000),
         )
         
+        self.health_bar = Bar(
+            display=self.display,
+            from_=0,
+            value=self.durability,
+            to=self.durability,
+            width=70,
+            height=7,
+        )
+        
         self.bullet_img = pygame.image.load("assets/images/enemy_bullet.png").convert_alpha()
         self.bullet_img = pygame.transform.rotate(self.bullet_img, 180)
         self.bullet_img = pygame.transform.scale(self.bullet_img , (40, 40))
@@ -96,21 +108,45 @@ class Enemy:
     def rect(self, new_rect: pygame.Rect) -> None: 
         self.spaceship.rect = new_rect
         
+    @property
+    def durability(self) -> int:
+        return self.__durability
+    
+    @durability.setter
+    def durability(self, val: int) -> None:
+        self.health_bar.to = val
+        self.__durability = val
+        
+    @property
+    def health(self) -> Union[int, float]:
+        return self.health_bar.value
+    
+    @health.setter
+    def health(self, new_health: Union[int, float]):
+        self.health_bar.value = new_health
+        
     def kill(self) -> None:
-        self.__is_alive = False
+        self.health = 0
         
     def revive(self) -> None:
-        self.__is_alive = True
+        self.health = self.durability
         
     @property
     def is_alive(self) -> bool:
-        return self.__is_alive
+        return self.health > 0
         
     def is_useless(self) -> None:
         return (not self.is_alive) and self.bullet_group.is_empty()
+    
+    def update_health_bar(self) -> None:
+        self.health_bar.rect.centerx = self.rect.centerx
+        self.health_bar.rect.y = self.rect.bottom + 10
+        if self.show_health_bar:
+            self.health_bar.update()
         
     def update(self) -> None:
         self.bullet_group.update_all()
+        self.update_health_bar()
         if self.is_alive:
             self.handle_auto_fire()
             self.spaceship.update(self.display)

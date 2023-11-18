@@ -2,10 +2,11 @@ import pygame
 from typing import Tuple, List, Callable
 
 class Bullet:
-    def __init__(self, display: pygame.Surface, img: pygame.Surface, vel: int = 5, coords: Tuple[int, int] = None) -> None:
+    def __init__(self, display: pygame.Surface, img: pygame.Surface, vel: int = 5, damage: int = 60, coords: Tuple[int, int] = None) -> None:
         self.display = display
         self.image = img
         self.vel = vel
+        self.damage = damage
         
         self.__fired = False
         self.__loaded = False

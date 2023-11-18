@@ -9,18 +9,20 @@ class Player:
     def __init__(self, display: pygame.Surface) -> None:
         self.display = display
         
-        self.__load()
-        
-        # Player movement
+        # Player and movement
+        self.__durability = 100
         self.movement_vel = 6.5
         self.nitro_boost = 200
-        self.nitro_boost_unit = int(self.nitro_boost / self.nitro_bar.to)
         # Positioning
         self.health_nitro_bar_spacing = 5
         # Bullet
         self.bullet_vel = 10
         self.firing_cooldown = 150
         self.last_fired = 0
+        
+        self.__load()
+        
+        self.nitro_boost_unit = int(self.nitro_boost / self.nitro_bar.to)
         
     def __load(self) -> None:
         # Player
@@ -29,13 +31,22 @@ class Player:
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         
-        self.health_bar = Bar(self.display, width=50, height=10, from_=0, to=100, outline_width=1, outline_color="green", value=100)
+        self.health_bar = Bar(self.display, width=50, height=10, from_=0, to=self.durability, outline_width=1, outline_color="green", value=self.durability)
         self.nitro_bar = Bar(self.display, width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)
         
         self.bullet_img = pygame.image.load("assets/images/bullet.png").convert_alpha()
         self.bullet_img = pygame.transform.scale(self.bullet_img , (40, 40))
         self.bullet_group = BulletGroup(self.display)
         self.bullet_group.remove_callback = lambda bullet: bullet.rect.bottom < 0
+        
+    @property
+    def durability(self) -> int:
+        return self.__durability
+    
+    @durability.setter
+    def durability(self, val: int) -> None:
+        self.health_bar.to = val
+        self.__durability = val
         
     def handle_player_movement(self) -> None:
         keys = pygame.key.get_pressed()

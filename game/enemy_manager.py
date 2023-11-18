@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Iterable
 import pygame
 import random
 
@@ -8,13 +8,13 @@ class EnemyManager:
     def __init__(self, display: pygame.Surface) -> None:
         self.display = display
         
-        self.downward_vel = 2.5
         self.no_sections = 5
         self.enemy_bullet_vel = 2
         self.enemy_vel = 1
         self.enemy_spawn_range = (1,3)
         self.delay_range = (500, 2000)
-        self.max_enemies = 100
+        self.max_enemies = 7
+        self.durability_probs: Iterable[int] = [100]
         
         self.__last_spawn_time = 0
         self.__delay: int = 0
@@ -26,12 +26,17 @@ class EnemyManager:
         section_width = self.display.get_width() / self.no_sections
         spawn_section = random.randint(0, self.no_sections)
         spawn_point = spawn_section*section_width + section_width / 2
+        
         enemy = Enemy(self.display)
-        enemy.bullet_vel = self.enemy_bullet_vel
         enemy.rect.centerx = spawn_point
         enemy.rect.bottom = 0
+        
+        enemy.bullet_vel = self.enemy_bullet_vel
+        enemy.durability = random.choice(self.durability_probs)
+        enemy.health_bar.value = enemy.durability
         enemy.autofire.autofire = True
         enemy.autofire.delay_range = (3000, 8000)
+        
         self.enemies_list.append(enemy)
         
     def handle_spawning(self) -> None:
@@ -57,12 +62,13 @@ class EnemyManager:
         
     def remove_useless_enemies(self) -> None:
         for enemy in reversed(self.enemies_list):
-            if enemy.rect.top > self.display.get_height() or enemy.is_useless():
+            if enemy.rect.top > self.display.get_height() or enemy.is_useless() or enemy.health <= 0:
                 self.enemies_list.remove(enemy)
         
     def update_enemies(self) -> None:
         self.handle_spawning()
         self.move_enemies()
         for enemy in self.enemies_list:
+            enemy.show_health_bar = enemy.health < enemy.durability
             enemy.update()
         self.remove_useless_enemies()
