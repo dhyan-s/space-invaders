@@ -22,6 +22,9 @@ class EnemyManager:
         self.enemies_list: List[Enemy] = []
         self._deleted_enemies: List[Enemy] = []
         
+    def __iter__(self) -> Iterable[Enemy]:
+        return iter(self.enemies_list)
+        
     def spawn_enemy(self) -> None:
         section_width = self.display.get_width() / self.no_sections
         spawn_section = random.randint(0, self.no_sections)

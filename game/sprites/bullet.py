@@ -1,5 +1,5 @@
 import pygame
-from typing import Tuple, List, Callable
+from typing import Iterable, Tuple, List, Callable
 
 class Bullet:
     def __init__(self, display: pygame.Surface, img: pygame.Surface, vel: int = 5, damage: int = 60, coords: Tuple[int, int] = None) -> None:
@@ -37,6 +37,9 @@ class BulletGroup:
         self.display = display
         self.bullet_list: List[Bullet] = []
         self.remove_callback = (lambda b: None) if remove_callback is None else remove_callback
+        
+    def __iter__(self) -> Iterable[Bullet]:
+        return iter(self.bullet_list)
         
     def add(self, bullet: Bullet) -> None:
         self.bullet_list.append(bullet)
