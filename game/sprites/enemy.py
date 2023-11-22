@@ -146,9 +146,9 @@ class Enemy:
         
     def update(self) -> None:
         self.bullet_group.update_all()
-        self.update_health_bar()
         if self.is_alive:
             self.handle_auto_fire()
+            self.update_health_bar()
             self.spaceship.update(self.display)
 
     def __fire_bullet(self, slot: int = 0) -> None:

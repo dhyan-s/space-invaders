@@ -65,7 +65,7 @@ class EnemyManager:
         
     def remove_useless_enemies(self) -> None:
         for enemy in reversed(self.enemies_list):
-            if enemy.rect.top > self.display.get_height() or enemy.is_useless() or enemy.health <= 0:
+            if enemy.rect.top > self.display.get_height() or enemy.is_useless():
                 self.enemies_list.remove(enemy)
         
     def update_enemies(self) -> None:
