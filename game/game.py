@@ -19,6 +19,7 @@ class Game:
         self.player = Player(self.display)
         self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
         self.player.durability = 400
+        self.player.health = self.player.durability
         
         self.enemy_manager = EnemyManager(self.display)
         self.enemy_manager.durability_probs = list(range(30, 50))*3 + list(range(60, 90))*2 + list(range(130, 180)) + list(range(180, 240, 5))

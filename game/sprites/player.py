@@ -1,6 +1,6 @@
 import pygame
 import math
-from typing import List
+from typing import List, Union
 
 from .bar import Bar
 from .bullet import Bullet, BulletGroup
@@ -48,6 +48,14 @@ class Player:
         self.health_bar.to = val
         self.__durability = val
         
+    @property
+    def health(self) -> Union[int, float]:
+        return self.health_bar.value
+    
+    @health.setter
+    def health(self, new_health: Union[int, float]):
+        self.health_bar.value = new_health
+        
     def handle_player_movement(self) -> None:
         keys = pygame.key.get_pressed()
         # Determine movement velocity
@@ -86,7 +94,7 @@ class Player:
         else:
             self.health_bar.fill_color = "green"
             self.health_bar.outline_color = "green"
-        self.health_bar.value -= 0.1
+        # self.health_bar.value -= 0.1
         self.health_bar.update()
         
     def update_nitro_bar(self) -> None:
