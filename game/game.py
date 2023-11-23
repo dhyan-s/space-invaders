@@ -31,7 +31,7 @@ class Game:
         
     def check_bullets(self) -> None:
         for bullet in reversed(self.player.bullet_group.bullet_list):
-            for enemy in self.enemy_manager:
+            for enemy in self.enemy_manager.enemies_list:
                 offset = (enemy.rect.x - bullet.rect.x, enemy.rect.y - bullet.rect.y)
                 if bullet.mask.overlap(enemy.mask, offset) and enemy.is_alive:
                     enemy.health -= bullet.damage
