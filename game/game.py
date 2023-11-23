@@ -37,6 +37,16 @@ class Game:
                     enemy.health -= bullet.damage
                     try: self.player.bullet_group.remove(bullet)
                     except ValueError: pass
+        for enemy in self.enemy_manager.enemies_list:
+            for bullet in reversed(enemy.bullet_group.bullet_list):
+                offset = (
+                    bullet.rect.x - self.player.rect.x,
+                    bullet.rect.y - self.player.rect.y
+                )
+                if self.player.mask.overlap(bullet.mask, offset):
+                    self.player.health -= bullet.damage
+                    enemy.bullet_group.bullet_list.remove(bullet)
+                
         
     def update(self) -> None:
         self.display.blit(self.background, (0, 0))

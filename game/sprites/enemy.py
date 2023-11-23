@@ -158,6 +158,7 @@ class Enemy:
         bullet = Bullet(self.display, self.bullet_img, self.bullet_vel)
         bullet.rect.midtop = self.spaceship.get_slot_coords(slot)
         bullet.fire()
+        bullet.damage = 30
         self.bullet_group.add(bullet)
         
     def fire_bullets(self, slots: Union[List[int], int] = 1) -> None:
