@@ -19,7 +19,7 @@ class EnemyManager:
         self.__last_spawn_time = 0
         self.__delay: int = 0
         
-        self.enemies_list: List[Enemy] = []
+        self.enemies = pygame.sprite.Group()
         self._deleted_enemies: List[Enemy] = []
         
     def spawn_enemy(self) -> None:
@@ -27,7 +27,7 @@ class EnemyManager:
         spawn_section = random.randint(0, self.no_sections)
         spawn_point = spawn_section*section_width + section_width / 2
         
-        enemy = Enemy(self.display)
+        enemy = Enemy()
         enemy.rect.centerx = spawn_point
         enemy.rect.bottom = 0
         
@@ -37,12 +37,12 @@ class EnemyManager:
         enemy.autofire.autofire = True
         enemy.autofire.delay_range = (3000, 8000)
         
-        self.enemies_list.append(enemy)
+        self.enemies.add(enemy)
         
     def handle_spawning(self) -> None:
-        if len(self.enemies_list) >= self.max_enemies or pygame.time.get_ticks() - self.__last_spawn_time < self.__delay:
+        if len(self.enemies) >= self.max_enemies or pygame.time.get_ticks() - self.__last_spawn_time < self.__delay:
             return
-        max_slots = self.max_enemies - len(self.enemies_list)
+        max_slots = self.max_enemies - len(self.enemies)
         no_of_enemies = random.randint(
             min(max_slots, self.enemy_spawn_range[0]),
             min(max_slots, self.enemy_spawn_range[1]),
@@ -53,22 +53,26 @@ class EnemyManager:
         self.__last_spawn_time = pygame.time.get_ticks()
         
     def move_enemies(self) -> None:
-        for enemy in self.enemies_list:
+        for enemy in self.enemies:
             enemy.rect.y += self.enemy_vel
             
     def delete_enemy(self, enemy: Enemy) -> None:
-        assert enemy in self.enemies_list
+        assert enemy in self.enemies
         enemy.kill()
         
     def remove_useless_enemies(self) -> None:
-        for enemy in reversed(self.enemies_list):
+        for enemy in self.enemies:
             if enemy.rect.top > self.display.get_height() or enemy.is_useless():
-                self.enemies_list.remove(enemy)
+                enemy.kill()
         
-    def update_enemies(self) -> None:
+    def draw(self) -> None:
         self.handle_spawning()
         self.move_enemies()
-        for enemy in self.enemies_list:
+        for enemy in self.enemies:
             enemy.show_health_bar = enemy.health < enemy.durability
-            enemy.update()
+            enemy.update(self.display)
+            if enemy.health > 0:
+                enemy.draw(self.display)
+            else:
+                enemy.bullets.draw(self.display)
         self.remove_useless_enemies()

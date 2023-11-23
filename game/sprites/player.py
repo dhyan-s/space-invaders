@@ -3,12 +3,11 @@ import math
 from typing import List, Union
 
 from .bar import Bar
-from .bullet import Bullet, BulletGroup
+from .bullet import Bullet
 
-class Player:
-    def __init__(self, display: pygame.Surface) -> None:
-        self.display = display
-        
+class Player(pygame.sprite.Sprite):
+    def __init__(self) -> None:
+        super().__init__()
         # Player and movement
         self.__durability = 100
         self.movement_vel = 6.5
@@ -31,13 +30,12 @@ class Player:
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         
-        self.health_bar = Bar(self.display, width=50, height=10, from_=0, to=self.durability, outline_width=1, outline_color="green", value=self.durability)
-        self.nitro_bar = Bar(self.display, width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)
+        self.health_bar = Bar(width=50, height=10, from_=0, to=self.durability, outline_width=1, outline_color="green", value=self.durability)
+        self.nitro_bar = Bar(width=50, height=10, fill_color="gold", from_=0, to=10, outline_width=1, outline_color="gold", value=10)
         
         self.bullet_img = pygame.image.load("assets/images/bullet.png").convert_alpha()
         self.bullet_img = pygame.transform.scale(self.bullet_img , (40, 40))
-        self.bullet_group = BulletGroup(self.display)
-        self.bullet_group.remove_callback = lambda bullet: bullet.rect.bottom < 0
+        self.bullets = pygame.sprite.Group()
         
     @property
     def durability(self) -> int:
@@ -56,7 +54,7 @@ class Player:
     def health(self, new_health: Union[int, float]):
         self.health_bar.value = new_health
         
-    def handle_player_movement(self) -> None:
+    def handle_player_movement(self, surface: pygame.Surface) -> None:
         keys = pygame.key.get_pressed()
         # Determine movement velocity
         x_change = 0
@@ -71,14 +69,19 @@ class Player:
         # Move player image
         self.rect.x += x_change
         self.rect.left = max(0, self.rect.left)
-        self.rect.right = min(self.display.get_width(), self.rect.right)
+        self.rect.right = min(surface.get_width(), self.rect.right)
         
-    def update(self):
-        self.handle_player_movement()
-        self.bullet_group.update_all()
-        self.display.blit(self.image, self.rect)
+    def update(self, surface: pygame.Surface):
+        self.handle_player_movement(surface)
+        self.bullets.update()
         self.update_health_bar()
         self.update_nitro_bar()
+        
+    def draw(self, surface: pygame.Surface):
+        surface.blit(self.image, self.rect)
+        self.bullets.draw(surface)
+        self.health_bar.draw(surface)
+        self.nitro_bar.draw(surface)
         
     def update_health_bar(self) -> None:
         self.health_bar.rect.left = self.rect.left
@@ -95,7 +98,6 @@ class Player:
             self.health_bar.fill_color = "green"
             self.health_bar.outline_color = "green"
         # self.health_bar.value -= 0.1
-        self.health_bar.update()
         
     def update_nitro_bar(self) -> None:
         self.nitro_bar.value = math.ceil(self.nitro_boost / self.nitro_boost_unit)
@@ -103,14 +105,13 @@ class Player:
         self.nitro_bar.rect.right = self.rect.right
         self.nitro_bar.rect.width = self.rect.width - self.health_bar.rect.width - self.health_nitro_bar_spacing
         self.nitro_bar.rect.top = self.health_bar.rect.top
-        self.nitro_bar.update()
         
     def fire_bullet(self) -> None:
         current_time = pygame.time.get_ticks()
         if current_time - self.last_fired < self.firing_cooldown:
             return
-        bullet = Bullet(self.display, self.bullet_img, -self.bullet_vel)
+        bullet = Bullet(self.bullet_img, -self.bullet_vel)
         bullet.rect.center = self.rect.center
         bullet.fire()
-        self.bullet_group.add(bullet)
+        self.bullets.add(bullet)
         self.last_fired = current_time

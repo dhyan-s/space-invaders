@@ -5,6 +5,7 @@ class Bullet(pygame.sprite.Sprite):
                  img: pygame.Surface, 
                  vel: int = 5, 
                  damage: int = 60) -> None:
+        super().__init__()
         self.image = img
         self.vel = vel
         self.damage = damage
