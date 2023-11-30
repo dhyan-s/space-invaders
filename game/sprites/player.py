@@ -11,11 +11,8 @@ class Player(Character):
     def __init__(self) -> None:
         self.__load()
         
-        self.nitro_boost = 200
         self.health_nitro_bar_spacing = 5
         self.firing_cooldown = 150
-        
-        self.nitro_boost_unit = int(self.nitro_boost / self.nitro_bar.to)
         
     def __load(self) -> None:
         self.image = pygame.image.load("assets/images/player.png").convert_alpha()
@@ -44,7 +41,7 @@ class Player(Character):
             x_change = self.vel
         # Handle nitro
         if keys[pygame.K_RCTRL] and self.nitro_bar.value > 0 and x_change != 0:
-            self.nitro_boost -= 1
+            self.nitro_bar.value -= 0.03
             x_change *= 2
         # Move player image
         self.rect.x += x_change
@@ -57,7 +54,6 @@ class Player(Character):
         self.health_bar.rect.top = self.rect.bottom + 10
         
     def update_nitro_bar(self) -> None:
-        self.nitro_bar.value = math.ceil(self.nitro_boost / self.nitro_boost_unit)
         self.nitro_bar.rect.right = self.rect.right
         self.nitro_bar.width = self.rect.width - self.health_bar.width - self.health_nitro_bar_spacing
         self.nitro_bar.rect.top = self.health_bar.rect.top
