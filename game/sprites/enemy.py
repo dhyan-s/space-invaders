@@ -13,12 +13,6 @@ class Slots:
         self.factors = slot_factors if slot_factors is not None else []
         self.rect = sprite_rect
         
-    def add(self, factor: Tuple[float, float]) -> None:
-        self.factors.append((factor, 0))
-        
-    def remove(self, factor: Tuple[float, float]) -> None:
-        self.factors.remove(factor)
-        
     @property
     def no_of_slots(self) -> int:
         return len(self.factors)
