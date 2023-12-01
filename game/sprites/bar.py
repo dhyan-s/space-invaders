@@ -21,7 +21,7 @@ class Bar:
         self.empty_color = empty_color
         self.from_ = from_
         self.to = to
-        self.value = max(value, self.from_)
+        self.__value = max(value, self.from_)
         self.outline_width = outline_width
         self.outline_color = outline_color
         self.orient = orient
@@ -41,6 +41,12 @@ class Bar:
     
     @height.setter
     def height(self, val: int): self.rect.height = val
+    
+    @property
+    def value(self) -> float: return max(self.__value, self.from_)
+    
+    @value.setter
+    def value(self, val: float) -> None: self.__value = min(val, self.to)
         
     def render_outline(self, surface: pygame.Surface) -> None:
         outline_color = self.get_colors()[1]
