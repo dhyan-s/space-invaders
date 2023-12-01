@@ -34,6 +34,8 @@ class Game:
             for bullet in reversed(self.player.bullets.sprites()):
                 if pygame.sprite.collide_mask(bullet, enemy) and enemy.health > 0:
                     enemy.health -= bullet.damage
+                    if enemy.health <= 0:
+                        self.player.nitro_bar.value += 0.25
                     bullet.kill()
             for bullet in reversed(enemy.bullets.sprites()):
                 if pygame.sprite.collide_mask(bullet, self.player):

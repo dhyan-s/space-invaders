@@ -12,7 +12,7 @@ class Player(Character):
         self.__load()
         
         self.health_nitro_bar_spacing = 5
-        self.firing_cooldown = 150
+        self.firing_cooldown = 120
         
     def __load(self) -> None:
         self.image = pygame.image.load("assets/images/player.png").convert_alpha()
@@ -41,7 +41,7 @@ class Player(Character):
             x_change = self.vel
         # Handle nitro
         if keys[pygame.K_RCTRL] and self.nitro_bar.value > 0 and x_change != 0:
-            self.nitro_bar.value -= 0.03
+            self.nitro_bar.value -= 0.04
             x_change *= 2
         # Move player image
         self.rect.x += x_change
