@@ -117,7 +117,7 @@ class Enemy(Character): # TODO: Clean up
             self.__fire_bullet(slot)
             
     def handle_auto_fire(self) -> None:
-        if self.autofire.ready_to_fire():
+        if self.autofire.ready_to_fire() and self.health > 0:
             self.fire_bullet(self.autofire.get_rand_firing_slots())
             self.autofire.update_firing_attributes()
             
