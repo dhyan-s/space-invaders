@@ -4,10 +4,12 @@ from typing import List
 from .sprites.player import Player
 from .sprites.enemy import Enemy
 from .enemy_manager import EnemyManager
+from .game_state import GameStateManager
 
 class Game:
-    def __init__(self, display: pygame.Surface) -> None:
+    def __init__(self, display: pygame.Surface, game_state_manager: GameStateManager) -> None:
         self.display = display
+        self.game_state_manager = game_state_manager
         
         self._load_game_objects()
         
@@ -37,6 +39,17 @@ class Game:
                 if pygame.sprite.collide_mask(bullet, self.player):
                     self.player.health -= bullet.damage
                     bullet.kill()
+                    if self.player.health <= 0:
+                        self.player_killed()
+                        
+    def player_killed(self) -> None:
+        self.trigger_game_over("Player Killed.")
+                        
+    def trigger_game_over(self, msg: str) -> None:
+        self.game_state_manager.set_current_state("game_over")
+        reason_msg = self.game_state_manager.get_state_by_name("game_over").obj.reason
+        reason_msg.text = msg
+        reason_msg.color = "red"
         
     def render(self) -> None:
         self.check_bullets()

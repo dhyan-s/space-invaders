@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from game import Game, GameStateManager
+from game import Game, GameStateManager, GameOver
 
 pygame.init( )
 
@@ -19,10 +19,14 @@ background = pygame.transform.scale(background, (display.get_width(), display.ge
 background.set_alpha(200)
 
 game_state_manager = GameStateManager()
-game = Game(display)
+
+game = Game(display, game_state_manager)
+game_over = GameOver(display, game_state_manager)
 
 game_state_manager.add_state('game', game)
+game_state_manager.add_state('game_over', game_over)
 game_state_manager.set_current_state('game')
+
 
 while True:
     display.fill((0, 0, 0))

@@ -14,19 +14,19 @@ class GameStateManager:
         self._state: GameState = None
         
     def add_state(self, name, state, overlay_on = None): 
-        if self._get_state_by_name(name) is not None:
+        if self.get_state_by_name(name) is not None:
             raise ValueError(f"State '{name}' already exists.")
         self.states.append(GameState(name, state, overlay_on))
         if len(self.states) == 1:
             self._state = self.states[0]
         
     def remove_state(self, name): 
-        state = self._get_state_by_name(name)
+        state = self.get_state_by_name(name)
         if state is not None: 
             raise ValueError(f"State '{name}' doesn't exist.")
         self.states.remove(state)
         
-    def _get_state_by_name(self, name):
+    def get_state_by_name(self, name) -> GameState:
         for state in self.states:
             if state.name == name:
                 return state
@@ -35,7 +35,7 @@ class GameStateManager:
         return self._state
     
     def set_current_state(self, name): 
-        state = self._get_state_by_name(name)
+        state = self.get_state_by_name(name)
         if state:
             self._state = state
         else:
