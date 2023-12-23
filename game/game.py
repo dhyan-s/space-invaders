@@ -12,10 +12,6 @@ class Game:
         self._load_game_objects()
         
     def _load_game_objects(self):
-        self.background = pygame.image.load("assets/images/background.jpg").convert_alpha()
-        self.background = pygame.transform.scale(self.background, (self.display.get_width(), self.display.get_height()))
-        self.background.set_alpha(200)
-        
         self.player = Player()
         self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
         self.player.durability = 400
@@ -42,8 +38,7 @@ class Game:
                     self.player.health -= bullet.damage
                     bullet.kill()
         
-    def update(self) -> None:
-        self.display.blit(self.background, (0, 0))
+    def render(self) -> None:
         self.check_bullets()
         self.enemy_manager.draw()
         self.player.update(self.display)
