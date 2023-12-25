@@ -20,6 +20,7 @@ class Game:
         
         self.enemy_manager = EnemyManager(self.display)
         self.enemy_manager.durability_probs = list(range(30, 50))*3 + list(range(60, 90))*2 + list(range(130, 180)) + list(range(180, 240, 5))
+        self.enemy_manager.debug = True
         
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
@@ -33,6 +34,8 @@ class Game:
                     enemy.health -= bullet.damage
                     if enemy.health <= 0:
                         self.player.nitro_bar.value += 0.25
+                        if self.enemy_manager.debug:
+                            print(f"Killed Enemy {enemy.label_text}")
                     bullet.kill()
             for bullet in reversed(enemy.bullets.sprites()):
                 if pygame.sprite.collide_mask(bullet, self.player):
@@ -43,8 +46,11 @@ class Game:
         if self.player.health <= 0:
             time.sleep(1)
             self.trigger_game_over("- Player Killed")
+            pass
         for enemy in self.enemy_manager.enemies:
             if enemy.rect.centery > self.display.get_height() and enemy.health > 0:
+                if self.enemy_manager.debug:
+                    print(f"Invaded: {enemy.label_text}")
                 time.sleep(1)
                 self.trigger_game_over("- Enemy has invaded the planet")
                 break

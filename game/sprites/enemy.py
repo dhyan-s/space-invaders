@@ -59,6 +59,10 @@ class Enemy(Character): # TODO: Clean up
         
         self.bullet_vel = 2
         self.show_health_bar = False
+        self.label_text: str = None
+        self.display_label: bool = False
+        
+        self.label_font = pygame.font.SysFont("consolas", 25)
         
     def __load(self) -> None:
         self.image = pygame.image.load("assets/images/enemy.png").convert_alpha()
@@ -95,7 +99,7 @@ class Enemy(Character): # TODO: Clean up
             ]
         )
         
-    def is_useless(self) -> None:
+    def is_useless(self) -> bool:
         return self.health <= 0 and len(self.bullets.sprites()) == 0
     
     def update_health_bar(self) -> None:
@@ -134,4 +138,7 @@ class Enemy(Character): # TODO: Clean up
         if self.show_health_bar:
             self.health_bar.draw(surface)
         surface.blit(self.image, self.rect)
+        if self.display_label:
+            label = self.label_font.render(str(self.label_text), True, "white", "black")
+            surface.blit(label, self.rect.midbottom)
             
