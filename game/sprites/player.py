@@ -44,6 +44,14 @@ class Player(Character):
         self.rect.left = max(0, self.rect.left)
         self.rect.right = min(surface.get_width(), self.rect.right)
         
+    @property
+    def nitro(self) -> float:
+        return self.nitro_bar.value
+    
+    @nitro.setter
+    def nitro(self, val: float) -> None:
+        self.nitro_bar.value = val
+        
     def update_health_bar(self) -> None:
         self.health_bar.rect.left = self.rect.left
         self.health_bar.width = self.rect.width * 0.75
