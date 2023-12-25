@@ -16,6 +16,7 @@ class EnemyManager:
         self.max_enemies = 7
         self.durability_probs: Iterable[int] = [100]
         
+        self.spawn_enemies = True        
         self.__last_spawn_time = 0
         self.__delay: int = 0
         
@@ -40,7 +41,7 @@ class EnemyManager:
         self.enemies.add(enemy)
         
     def handle_spawning(self) -> None:
-        if len(self.enemies) >= self.max_enemies or pygame.time.get_ticks() - self.__last_spawn_time < self.__delay:
+        if len(self.enemies) >= self.max_enemies or pygame.time.get_ticks() - self.__last_spawn_time < self.__delay or not self.spawn_enemies:
             return
         max_slots = self.max_enemies - len(self.enemies)
         no_of_enemies = random.randint(

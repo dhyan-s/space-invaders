@@ -1,10 +1,6 @@
 import pygame
-import math
-from typing import List, Union
-
 
 from .bar import Bar
-from .bullet import Bullet
 from .character import Character
 
 class Player(Character):
@@ -65,7 +61,7 @@ class Player(Character):
         self.update_nitro_bar()
         
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.image, self.rect)
         self.bullets.draw(surface)
         self.health_bar.draw(surface)
         self.nitro_bar.draw(surface)
+        surface.blit(self.image, self.rect)

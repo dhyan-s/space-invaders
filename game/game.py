@@ -1,8 +1,7 @@
 import pygame
-from typing import List
+import time
 
 from .sprites.player import Player
-from .sprites.enemy import Enemy
 from .enemy_manager import EnemyManager
 from .game_state import GameStateManager
 
@@ -39,11 +38,16 @@ class Game:
                 if pygame.sprite.collide_mask(bullet, self.player):
                     self.player.health -= bullet.damage
                     bullet.kill()
-                    if self.player.health <= 0:
-                        self.player_killed()
-                        
-    def player_killed(self) -> None:
-        self.trigger_game_over("Player Killed.")
+                    
+    def handle_game_over(self) -> None:
+        if self.player.health <= 0:
+            time.sleep(1)
+            self.trigger_game_over("- Player Killed")
+        for enemy in self.enemy_manager.enemies:
+            if enemy.rect.centery > self.display.get_height() and enemy.health > 0:
+                time.sleep(1)
+                self.trigger_game_over("- Enemy has invaded the planet")
+                break
                         
     def trigger_game_over(self, msg: str) -> None:
         self.game_state_manager.set_current_state("game_over")
@@ -56,3 +60,4 @@ class Game:
         self.enemy_manager.draw()
         self.player.update(self.display)
         self.player.draw(self.display)
+        self.handle_game_over()

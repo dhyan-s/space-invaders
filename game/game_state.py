@@ -1,4 +1,3 @@
-import pygame
 from dataclasses import dataclass
 from typing import Any, List
 
