@@ -53,7 +53,7 @@ class AutoFire:
         
 
 
-class Enemy(Character): # TODO: Clean up
+class Enemy(Character):
     def __init__(self) -> None:
         self.__load()
         

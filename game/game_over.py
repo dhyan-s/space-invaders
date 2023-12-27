@@ -54,7 +54,7 @@ class GameOver:
         
         self.display.blit(self.text_surf, surf_rect)
         for idx, msg in enumerate(rendered_msgs):
-           self.text_surf.blit(msg, msg_rects[idx]) 
+            self.text_surf.blit(msg, msg_rects[idx]) 
         
     def render(self):
         self.render_messages()

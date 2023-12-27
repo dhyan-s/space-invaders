@@ -3,7 +3,7 @@ import sys
 
 from game import Game, GameStateManager, GameOver
 
-pygame.init( )
+pygame.init()
 
 SCREENWIDTH = 1100
 SCREENHEIGHT = 800

@@ -46,7 +46,6 @@ class Game:
         if self.player.health <= 0:
             time.sleep(1)
             self.trigger_game_over("- Player Killed")
-            pass
         for enemy in self.enemy_manager.enemies:
             if enemy.rect.centery > self.display.get_height() and enemy.health > 0:
                 if self.enemy_manager.debug:
@@ -67,7 +66,6 @@ class Game:
         self.player.health = self.player.durability
         self.player.nitro = self.player.nitro_bar.to
         self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
-        # TODO: Continue (check if restart working fine by enabling debug)
         
     def render(self) -> None:
         self.check_bullets()
