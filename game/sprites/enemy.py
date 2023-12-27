@@ -61,6 +61,7 @@ class Enemy(Character):
         self.show_health_bar = False
         self.label_text: str = None
         self.display_label: bool = False
+        self.gunshot_sound: pygame.mixer.Sound = None
         
         self.label_font = pygame.font.SysFont("consolas", 25)
         
@@ -113,6 +114,8 @@ class Enemy(Character):
         bullet.rect.midtop = self.slots.get_slot_coords(slot)
         bullet.fire()
         bullet.damage = 30
+        if self.gunshot_sound is not None:
+            self.gunshot_sound.play()
         self.bullets.add(bullet)
         
     def fire_bullet(self, slots: Union[List[int], int] = 1) -> None:

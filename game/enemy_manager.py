@@ -11,6 +11,7 @@ class EnemyManager:
         self.no_sections = 5
         self.enemy_bullet_vel = 2
         self.enemy_vel = 1
+        self.enemy_gunshot_sound: pygame.mixer.Sound = None
         self.enemy_spawn_range = (1,3)
         self.delay_range = (500, 2000)
         self.max_enemies = 7
@@ -39,6 +40,7 @@ class EnemyManager:
         self.count += 1
         
         enemy.bullet_vel = self.enemy_bullet_vel
+        enemy.gunshot_sound = self.enemy_gunshot_sound
         enemy.durability = random.choice(self.durability_probs)
         enemy.health = enemy.durability
         if self.debug:
