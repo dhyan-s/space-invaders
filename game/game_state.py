@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+import pygame
+
 @dataclass
 class GameState:
     name: str
@@ -39,6 +41,9 @@ class GameStateManager:
             self._state = state
         else:
             raise ValueError(f"State '{name}' doesn't exist.")
+        
+    def handle_event(self, event: pygame.event.Event):
+        self._state.obj.handle_event(event)
     
     def render(self):
         self._state.obj.render()

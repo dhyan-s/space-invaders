@@ -20,7 +20,7 @@ class Game:
         
         self.enemy_manager = EnemyManager(self.display)
         self.enemy_manager.durability_probs = list(range(30, 50))*3 + list(range(60, 90))*2 + list(range(130, 180)) + list(range(180, 240, 5))
-        self.enemy_manager.debug = True
+        # self.enemy_manager.debug = True
         
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
@@ -60,6 +60,14 @@ class Game:
         reason_msg = self.game_state_manager.get_state_by_name("game_over").obj.reason
         reason_msg.text = msg
         reason_msg.color = "red"
+        
+    def restart(self) -> None:
+        self.enemy_manager.enemies.empty()
+        self.enemy_manager.count = 1
+        self.player.health = self.player.durability
+        self.player.nitro = self.player.nitro_bar.to
+        self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
+        # TODO: Continue (check if restart working fine by enabling debug)
         
     def render(self) -> None:
         self.check_bullets()

@@ -36,7 +36,7 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit() 
             sys.exit()
-        game.handle_event(event)
+        game_state_manager.handle_event(event)
             
     game_state_manager.render()
             

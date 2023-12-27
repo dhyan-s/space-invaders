@@ -2,6 +2,8 @@ from typing import List
 import pygame
 from dataclasses import dataclass
 
+from game.game import Game
+
 from .game_state import GameStateManager
 
 @dataclass
@@ -26,9 +28,16 @@ class GameOver:
         self.continue_ = Message("Press Enter to Continue...", self.message_font, 20)
         self.reason = Message("", self.message_font, 10)
         self.messages = [self.gameover, self.reason, self.continue_]
-        
+                
         self.text_surf = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
         self.text_surf.convert_alpha()
+        
+    def handle_event(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                game: Game = self.game_state_manager.get_state_by_name('game').obj
+                game.restart()
+                self.game_state_manager.set_current_state('game')
         
     def render_messages(self):
         surf_height = sum(msg.render().get_height() + msg.margin_top for msg in self.messages)
