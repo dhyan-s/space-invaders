@@ -27,10 +27,11 @@ class Game:
         
     def load_sounds(self):
         self.sounds = {
-            'damage': 'assets/sounds/damage.mp3',
+            'player_damage': 'assets/sounds/player_damage.mp3',
             'player_gunshot': 'assets/sounds/player_gunshot.mp3',
             'enemy_gunshot': 'assets/sounds/enemy_gunshot.mp3',
             'game_over': 'assets/sounds/game_over.mp3',
+            'enemy_damage': 'assets/sounds/enemy_damage.mp3'
         }
         self.sounds: Dict[str, pygame.mixer.Sound] = {name: pygame.mixer.Sound(path) for name, path in self.sounds.items()}
         
@@ -51,7 +52,7 @@ class Game:
             for bullet in reversed(self.player.bullets.sprites()):
                 if pygame.sprite.collide_mask(bullet, enemy) and enemy.health > 0:
                     enemy.health -= bullet.damage
-                    self.sounds['damage'].play()
+                    self.sounds['enemy_damage'].play()
                     if enemy.health <= 0:
                         self.player.nitro_bar.value += 0.25
                         if self.enemy_manager.debug:
@@ -60,7 +61,7 @@ class Game:
             for bullet in reversed(enemy.bullets.sprites()):
                 if pygame.sprite.collide_mask(bullet, self.player):
                     self.player.health -= bullet.damage
-                    self.sounds['damage'].play()
+                    self.sounds['player_damage'].play()
                     bullet.kill()
                     
     def handle_game_over(self) -> None:
