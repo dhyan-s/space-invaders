@@ -30,7 +30,6 @@ class GameOver:
         self.messages = [self.gameover, self.reason, self.continue_]
                 
         self.text_surf = pygame.Surface((0, 0), pygame.SRCALPHA, 32)
-        self.text_surf.convert_alpha()
         
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
@@ -43,6 +42,7 @@ class GameOver:
         surf_height = sum(msg.render().get_height() + msg.margin_top for msg in self.messages)
         
         self.text_surf = pygame.transform.scale(self.text_surf, (self.display.get_width(), surf_height))
+        self.text_surf.fill((0, 0, 0, 0))
         surf_rect = self.text_surf.get_rect()
         surf_rect.center = self.display.get_rect().center
         
@@ -52,9 +52,9 @@ class GameOver:
             y = (msg_rects[idx-1].bottom + self.messages[idx].margin_top) if idx > 0 else 0
             rect.midtop = (surf_rect.centerx, y)
         
-        self.display.blit(self.text_surf, surf_rect)
         for idx, msg in enumerate(rendered_msgs):
             self.text_surf.blit(msg, msg_rects[idx]) 
+        self.display.blit(self.text_surf, surf_rect)
         
     def render(self):
         self.render_messages()
