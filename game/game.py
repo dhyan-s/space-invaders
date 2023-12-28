@@ -91,6 +91,7 @@ class Game:
         self.player.health = self.player.durability
         self.player.nitro = self.player.nitro_bar.to
         self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
+        self.player.bullets.empty()
         
     def render(self) -> None:
         self.check_bullets()
