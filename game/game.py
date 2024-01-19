@@ -3,8 +3,10 @@ import time
 from typing import Dict
 
 from .sprites.player import Player
+from .sprites.enemy import Enemy
 from .enemy_manager import EnemyManager
 from .game_state import GameStateManager
+from .score import ScoreHandler
 
 class Game:
     def __init__(self, display: pygame.Surface, game_state_manager: GameStateManager) -> None:
@@ -24,6 +26,8 @@ class Game:
         self.enemy_manager.durability_probs = list(range(30, 50))*3 + list(range(60, 90))*2 + list(range(130, 180)) + list(range(180, 240, 5))
         self.enemy_manager.enemy_gunshot_sound = self.sounds['enemy_gunshot']
         # self.enemy_manager.debug = True
+        
+        self.score = ScoreHandler(self.display, Enemy().image.copy())
         
     def load_sounds(self):
         self.sounds = {
@@ -55,6 +59,7 @@ class Game:
                     self.sounds['enemy_damage'].play()
                     if enemy.health <= 0:
                         self.player.nitro_bar.value += 0.25
+                        self.score.increment_score_by(1)
                         if self.enemy_manager.debug:
                             print(f"Killed Enemy {enemy.label_text}")
                     bullet.kill()
@@ -92,6 +97,7 @@ class Game:
         self.player.health = self.player.durability
         self.player.nitro = self.player.nitro_bar.to
         self.player.rect.midbottom = (self.display.get_width() / 2, self.display.get_height() - 50)
+        self.score.set_score_to(0)
         self.player.bullets.empty()
         
     def render(self) -> None:
@@ -99,4 +105,5 @@ class Game:
         self.enemy_manager.draw()
         self.player.update(self.display)
         self.player.draw(self.display)
+        self.score.render()
         self.handle_game_over()
