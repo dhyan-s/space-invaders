@@ -31,17 +31,17 @@ class ScoreHandler:
         
     def render(self):
         display_width, display_height = self.display.get_size()
-        self.highscore_img_rect.bottomright = (display_width - 10, display_height - 10)
-        self.enemy_img_rect.midbottom = (self.highscore_img_rect.centerx, self.highscore_img_rect.top - 20)
-        
         self.score_text = self.text_font.render(str(self.__score), True, "white")
         self.highscore_text = self.text_font.render(str(self.__highscore), True, "white")
+        
+        self.highscore_img_rect.bottomright = (display_width - self.highscore_text.get_width() - 30, display_height - 10)
+        self.enemy_img_rect.midbottom = (self.highscore_img_rect.centerx, self.highscore_img_rect.top - 20)
         
         score_rect = self.score_text.get_rect()
         highscore_rect = self.highscore_text.get_rect()
         
-        score_rect.midright = (self.enemy_img_rect.left-10, self.enemy_img_rect.centery)
-        highscore_rect.midright = (self.highscore_img_rect.left-10, self.highscore_img_rect.centery)
+        score_rect.midleft = (self.enemy_img_rect.right+10, self.enemy_img_rect.centery)
+        highscore_rect.midleft = (score_rect.left, self.highscore_img_rect.centery)
         
         self.display.blit(self.highscore_img, self.highscore_img_rect)
         self.display.blit(self.enemy_img, self.enemy_img_rect)
