@@ -63,5 +63,5 @@ class ScoreHandler:
         if self.__score > self.__highscore:
             self.__highscore = self.__score
             
-    def get_score(self) -> int: return self.score
-    def get_highscore(self) -> int: return self.highscore
+    def get_score(self) -> int: return self.__score
+    def get_highscore(self) -> int: return self.__highscore
