@@ -1,6 +1,8 @@
 import pygame
 import time
+import os
 from typing import Dict
+import pickle
 
 from .sprites.player import Player
 from .sprites.enemy import Enemy
@@ -13,8 +15,14 @@ class Game:
         self.display = display
         self.game_state_manager = game_state_manager
         
+        self.game_data: Dict = {
+            "highscore": 0,
+        }
+        self.game_data_path = f"{os.path.dirname(__file__)}/game_data.dat"
+        
         self.load_sounds()
         self._load_game_objects()
+        self.load_game_data()
         
     def _load_game_objects(self):
         self.player = Player()
@@ -28,6 +36,33 @@ class Game:
         # self.enemy_manager.debug = True
         
         self.score = ScoreHandler(self.display, Enemy().image.copy())
+        
+    def load_game_data(self):
+        """
+        - Loads the game data from a file and applies it to the game.
+        - If the game data file doesn't exist, it creates a new file with default game data.
+        - If the file exists but is empty or corrupted, it resets the game data to default values.
+        """
+        if not os.path.exists(self.game_data_path): # File not found
+            self.save_game_data()
+        with open(self.game_data_path, "rb") as f:
+            try:
+                self.game_data = pickle.load(f)
+                self.apply_game_data()
+            except EOFError as e: # File exists but is likely empty
+                self.save_game_data()
+            except pickle.UnpicklingError as e: # Corrupted game data
+                self.save_game_data()
+    
+    def save_game_data(self) -> None:
+        """Saves the game data to a file."""
+        self.game_data["highscore"] = self.score.get_highscore()
+        with open(self.game_data_path, "wb") as f:
+            pickle.dump(self.game_data, f)
+            
+    def apply_game_data(self) -> None:
+        """Applies the loaded game data to the respective objects in the game."""
+        self.score.set_highscore_to(self.game_data['highscore'])
         
     def load_sounds(self):
         self.sounds = {
@@ -92,6 +127,7 @@ class Game:
         reason_msg.color = "red"
         
     def restart(self) -> None:
+        self.save_game_data()
         self.enemy_manager.enemies.empty()
         self.enemy_manager.count = 1
         self.player.health = self.player.durability

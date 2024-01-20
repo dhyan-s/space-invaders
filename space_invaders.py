@@ -35,6 +35,7 @@ while True:
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            game.save_game_data()
             pygame.quit() 
             sys.exit()
         game_state_manager.handle_event(event)

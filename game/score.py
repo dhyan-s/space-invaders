@@ -56,6 +56,9 @@ class ScoreHandler:
         self.__score = val
         self.check_highscore()
         
+    def set_highscore_to(self, val: int):
+        self.__highscore = val
+        
     def reset_score(self):
         self.__score = 0
         
