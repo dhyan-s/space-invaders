@@ -77,7 +77,7 @@ class Game:
         self.bg_music_path = 'assets/sounds/bg_music.mp3'
         self.bg_music_full_volume = 0.5
         pygame.mixer.music.load(self.bg_music_path)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(self.bg_music_full_volume)
         
     def handle_event(self, event: pygame.event.Event) -> None:
