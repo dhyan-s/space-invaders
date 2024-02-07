@@ -1,4 +1,7 @@
-**A more modern, colorful and appealing space invaders game with a slightly different concept**
+_**A modern, colorful and appealing space invaders game with a slightly different concept.**_
+
+![Screenshot 2024-02-07 233927](https://github.com/dhyan-s/space-invaders/assets/106443221/bd531cc1-63cf-4f12-b982-24aaefe99cc8)
+
 
 # Setup
 
